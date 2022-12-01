@@ -17,8 +17,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private UserRole userRole;
+    // Embedded 써야할지 OneToOne 써야할지 모르겠음.. 생각해보자 나중에
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name="userInfoDetail_id")
+    private UserInfoDetail userInfoDetail;
 
     private String mobileNumber;
 
