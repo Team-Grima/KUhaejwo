@@ -22,6 +22,7 @@ public class Users implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @Enumerated(value = EnumType.STRING)
     private UserRole userRole;
     // Embedded 써야할지 OneToOne 써야할지 모르겠음.. 생각해보자 나중에
@@ -36,6 +37,7 @@ public class Users implements UserDetails {
 
     private String mobileNumber;
 
+    private String name;
     private String email;
 
     private String password;
@@ -43,6 +45,13 @@ public class Users implements UserDetails {
     private Boolean emailAuth;
 
     private Boolean dormitory;
+
+    public Users(String email, String password, String name) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.userRole=UserRole.USER;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
