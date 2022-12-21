@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class CustomMemberDetailService implements UserDetailsService {
 
     private final UsersRepository userRepository;
 
