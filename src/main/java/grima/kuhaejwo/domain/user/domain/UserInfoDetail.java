@@ -17,5 +17,5 @@ public class UserInfoDetail {
     private Long id;
 
     @OneToOne(mappedBy = "userInfoDetail")
-    private User user;
+    private Users user;
 }

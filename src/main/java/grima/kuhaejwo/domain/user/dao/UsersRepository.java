@@ -1,9 +1,9 @@
 package grima.kuhaejwo.domain.user.dao;
 
-import grima.kuhaejwo.domain.user.domain.User;
+import grima.kuhaejwo.domain.user.domain.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface UsersRepository extends JpaRepository<Users,Long> {
 }
