@@ -1,6 +1,6 @@
 package grima.kuhaejwo.domain.mateoffer.domain;
 
-import grima.kuhaejwo.domain.user.domain.User;
+import grima.kuhaejwo.domain.user.domain.Users;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class MateOffer {
     private Long id;
 
     @OneToOne(mappedBy = "mateOffer")
-    private User user;
+    private Users user;
 
     private String title;
 
