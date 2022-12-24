@@ -89,4 +89,8 @@ public class Users implements UserDetails {
     public void setBasicInfo(BasicInfo basicInfo) {
         this.basicInfo = basicInfo;
     }
+
+    public void setInfoDetail(UserInfoDetail userInfoDetail) {
+        this.userInfoDetail = userInfoDetail;
+    }
 }

@@ -71,4 +71,21 @@ public class UserInfoDetail {
     //나는 룸메와?
     @Enumerated(value = EnumType.STRING)
     private Friend friend;
+
+    public UserInfoDetail(Users user, CleanHabit cleanHabit, WashingTime washingTime, Alcohol alcohol, Smoking smoking, SleepingTime sleepingTime, SleepingHabit sleepingHabit, Sleeper sleeper, WakeUpTime wakeUpTime, Alarm alarm, Outing outing, Bug bug, Temperature temperature, Friend friend) {
+        this.user = user;
+        this.cleanHabit = cleanHabit;
+        this.washingTime = washingTime;
+        this.alcohol = alcohol;
+        this.smoking = smoking;
+        this.sleepingTime = sleepingTime;
+        this.sleepingHabit = sleepingHabit;
+        this.sleeper = sleeper;
+        this.wakeUpTime = wakeUpTime;
+        this.alarm = alarm;
+        this.outing = outing;
+        this.bug = bug;
+        this.temperature = temperature;
+        this.friend = friend;
+    }
 }
