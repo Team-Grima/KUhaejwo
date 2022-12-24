@@ -22,12 +22,12 @@ public class UsersService {
 
     //반환 값 무엇으로 할까요
     @Transactional
-    public Long createInfo(String token, UserBasicInfoRequest userBasicInfoRequest) {
+    public UserBasicInfoResponse createInfo(String token, UserBasicInfoRequest userBasicInfoRequest) {
         Long userLongPk = Long.parseLong(jwtProvider.getUserPk(token));
         Users user = userRepository.findById(userLongPk).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
         BasicInfo basicInfo = userBasicInfoRequest.toEntity();
         user.setBasicInfo(basicInfo);
-        return userLongPk;
+        return new UserBasicInfoResponse(basicInfo);
     }
 
     @Transactional
@@ -38,12 +38,12 @@ public class UsersService {
     }
     //업데이트 부분 어떻게 할까요
     @Transactional
-    public Long updateInfo(String token, UserBasicInfoRequest userBasicInfoRequest) {
+    public UserBasicInfoResponse updateInfo(String token, UserBasicInfoRequest userBasicInfoRequest) {
         Long userLongPk = Long.parseLong(jwtProvider.getUserPk(token));
         Users user = userRepository.findById(userLongPk).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 유저입니다."));
         BasicInfo basicInfo = userBasicInfoRequest.toEntity();
         user.setBasicInfo(basicInfo);
-        return userLongPk;
+        return new UserBasicInfoResponse(basicInfo);
     }
 
 
