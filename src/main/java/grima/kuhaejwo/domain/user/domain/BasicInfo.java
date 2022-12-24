@@ -3,6 +3,8 @@ package grima.kuhaejwo.domain.user.domain;
 import lombok.*;
 
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Embeddable
 @Getter
@@ -14,5 +16,7 @@ public class BasicInfo {
     private String studentId;
     private Long age;
     private String mbti;
+
+    @Enumerated(value=EnumType.STRING)
     private Gender gender;
 }
