@@ -30,6 +30,9 @@ public class Users implements UserDetails {
     @JoinColumn(name="userInfoDetail_id")
     private UserInfoDetail userInfoDetail;
 
+    @Embedded
+    private BasicInfo basicInfo;
+
     // mateOffer 엔티티에도 fetch 를 지연로딩으로 바꿔야 하는가? cascade 또한 어떻게 설정 해야하는가
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "mateOffer_id")
@@ -81,5 +84,17 @@ public class Users implements UserDetails {
     @Override
     public boolean isEnabled() {
         return false;
+    }
+
+    public void setBasicInfo(BasicInfo basicInfo) {
+        this.basicInfo = basicInfo;
+    }
+
+    public void setInfoDetail(UserInfoDetail userInfoDetail) {
+        this.userInfoDetail = userInfoDetail;
+    }
+
+    public void setMateOffer(MateOffer mateOffer) {
+        this.mateOffer = mateOffer;
     }
 }

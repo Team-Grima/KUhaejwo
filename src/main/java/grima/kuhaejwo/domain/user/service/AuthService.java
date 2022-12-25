@@ -29,7 +29,10 @@ public class AuthService {
 
     @Transactional
     public Long signup(UserSignupRequest userSignupRequest) {
-        if (usersRepository.existsByEmail(userSignupRequest.getEmail())) throw new SignUpFailedException();
+//        if (usersRepository.existsByEmail(userSignupRequest.getEmail())) throw new SignUpFailedException();
+//        return usersRepository.save(userSignupRequest.toEntity(passwordEncoder)).getId();
+        if(usersRepository.findByEmail(userSignupRequest.getEmail()).isPresent())
+            throw new SignUpFailedException();
         return usersRepository.save(userSignupRequest.toEntity(passwordEncoder)).getId();
     }
 
