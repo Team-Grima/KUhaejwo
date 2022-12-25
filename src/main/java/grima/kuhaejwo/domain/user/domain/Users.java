@@ -93,4 +93,8 @@ public class Users implements UserDetails {
     public void setInfoDetail(UserInfoDetail userInfoDetail) {
         this.userInfoDetail = userInfoDetail;
     }
+
+    public void setMateOffer(MateOffer mateOffer) {
+        this.mateOffer = mateOffer;
+    }
 }

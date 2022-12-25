@@ -4,6 +4,7 @@ import grima.kuhaejwo.config.model.response.CommonResult;
 import grima.kuhaejwo.config.model.service.ResponseService;
 import grima.kuhaejwo.except.auth.LoginFailedException;
 import grima.kuhaejwo.except.auth.SignUpFailedException;
+import grima.kuhaejwo.except.mateoffer.MateOfferNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,5 +35,11 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult emailLoginFailedException(HttpServletRequest request, LoginFailedException e) {
         return this.responseService.getFailResult(e.getMessage());
+    }
+
+    @ExceptionHandler(MateOfferNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult mateOfferNotFoundException(HttpServletRequest request, MateOfferNotFoundException e) {
+        return this.responseService.getFailResult("존재 하지 않는 mateOffer 입니다.");
     }
 }

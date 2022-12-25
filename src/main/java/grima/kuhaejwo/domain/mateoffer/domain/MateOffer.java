@@ -35,4 +35,12 @@ public class MateOffer {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    public MateOffer(Users user, String title, String dormitoryName, String body, Boolean matching, Long goodnessOfFit) {
+        this.user = user;
+        this.title = title;
+        this.dormitoryName = dormitoryName;
+        this.body = body;
+        this.matching = matching;
+        this.goodnessOfFit = goodnessOfFit;
+    }
 }
