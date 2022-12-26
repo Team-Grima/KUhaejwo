@@ -83,8 +83,8 @@ public class JwtProvider {
         if(claims.get(ROLES)==null){
             throw new CAuthenticationEntryPointException();
         }
-        UserDetails userDetails= customMemberDetailService.loadUserByUsername(claims.getSubject());
-        // UserDetails userDetails=customMemberDetailService.loadUserByUsername(this.getUserPk(token));
+        //UserDetails userDetails= customMemberDetailService.loadUserByUsername(claims.getSubject());
+        UserDetails userDetails=customMemberDetailService.loadUserByUsername(this.getUserPk(token));
 
         return new UsernamePasswordAuthenticationToken(userDetails,"",userDetails.getAuthorities());
     }
