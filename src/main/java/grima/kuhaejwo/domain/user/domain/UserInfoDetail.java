@@ -17,7 +17,7 @@ public class UserInfoDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "userInfoDetail")
+    @OneToOne(mappedBy = "userInfoDetail",fetch = FetchType.LAZY)
     private Users user;
 
     //나의 청소 습관은?

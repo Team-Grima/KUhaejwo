@@ -1,6 +1,7 @@
 package grima.kuhaejwo.domain.user.domain;
 
 import grima.kuhaejwo.domain.mateoffer.domain.MateOffer;
+import grima.kuhaejwo.domain.user.domain.detail.Sleeper;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -63,7 +64,7 @@ public class Users implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return Long.toString(id);
     }
 
     @Override

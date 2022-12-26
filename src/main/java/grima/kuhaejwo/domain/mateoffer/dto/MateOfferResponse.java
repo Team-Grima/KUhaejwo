@@ -1,6 +1,7 @@
 package grima.kuhaejwo.domain.mateoffer.dto;
 
 import grima.kuhaejwo.domain.mateoffer.domain.MateOffer;
+import grima.kuhaejwo.domain.mateoffer.domain.UserProfile;
 import grima.kuhaejwo.domain.user.domain.BasicInfo;
 import grima.kuhaejwo.domain.user.domain.Users;
 import grima.kuhaejwo.domain.user.dto.UserBasicInfoResponse;
@@ -12,7 +13,6 @@ import lombok.Setter;
 @Setter
 public class MateOfferResponse {
     private Long id;
-    private UserBasicInfoResponse userBasicInfoResponse;
 
     private String title;
 
@@ -24,9 +24,12 @@ public class MateOfferResponse {
 
     private Long goodnessOfFit;
 
-    public MateOfferResponse(MateOffer mateOffer, BasicInfo basicInfo) {
+
+    private UserProfile userProfile;
+
+    public MateOfferResponse(MateOffer mateOffer) {
         this.id= mateOffer.getId();
-        this.userBasicInfoResponse = new UserBasicInfoResponse(basicInfo);
+        this.userProfile = mateOffer.getUserProfile();
         this.title= mateOffer.getTitle();
         this.dormitoryName= mateOffer.getDormitoryName();
         this.body= mateOffer.getBody();
