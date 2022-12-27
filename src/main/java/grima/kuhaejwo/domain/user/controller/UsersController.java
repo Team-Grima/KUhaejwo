@@ -95,7 +95,7 @@ public class UsersController {
     }
     @GetMapping("/{id}")
     @Operation(summary = "해당 유저 모든 정보 조회", description = "해당 유저의 모든 정보를 id로 조회합니다.")
-    public SingleResult<UserResponse> getInfoAll(
+    public SingleResult<UserResponse> getInfoAllById(
             @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token,
             @Parameter(name="id",description = "User Id",in = ParameterIn.PATH) @PathVariable Long id
     ){
