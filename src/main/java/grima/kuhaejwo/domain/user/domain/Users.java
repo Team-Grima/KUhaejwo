@@ -10,7 +10,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Getter
@@ -50,11 +52,15 @@ public class Users implements UserDetails {
 
     private Boolean dormitory;
 
+    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    private List<Prefer> prefers = new ArrayList<>();
+
     public Users(String email, String password, String name) {
+
         this.email = email;
         this.password = password;
         this.name = name;
-        this.userRole=UserRole.USER;
+        this.userRole = UserRole.USER;
     }
 
     @Override
@@ -97,5 +103,9 @@ public class Users implements UserDetails {
 
     public void setMateOffer(MateOffer mateOffer) {
         this.mateOffer = mateOffer;
+    }
+
+    public void setPrefers(List<Prefer> prefers) {
+        this.prefers = prefers;
     }
 }

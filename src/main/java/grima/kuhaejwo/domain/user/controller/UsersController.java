@@ -69,6 +69,15 @@ public class UsersController {
         return responseService.getSingleResult(usersService.createInfoDetail(userInfoDetailRequest));
     }
 
+    @PostMapping("/infoDetailFormdata")
+    @Operation(summary = "유저 세부 정보 생성", description = "User 세부 정보를 생성합니다.")
+    public SingleResult<UserInfoDetailResponse> createInfoDetailFormdata(
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token,
+            @ModelAttribute UserInfoDetailRequest userInfoDetailRequest
+    ) {
+        return responseService.getSingleResult(usersService.createInfoDetail(userInfoDetailRequest));
+    }
+
     @GetMapping("/infoDetail")
     @Operation(summary = "유저 세부 정보 조회", description = "User 세부 정보를 조회합니다.")
     public SingleResult<UserInfoDetailResponse> getInfoDetail(
@@ -100,6 +109,32 @@ public class UsersController {
             @Parameter(name="id",description = "User Id",in = ParameterIn.PATH) @PathVariable Long id
     ){
         return responseService.getSingleResult(usersService.getInfoAllById(id));
+    }
+
+    @PostMapping("/prefer")
+    @Operation(summary = "해당 유저 선호 추가", description = "해당 유저에게 선호를 추가합니다.")
+    public SingleResult<UserPreferResponse> createPrefer(
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token,
+            @RequestBody UserPreferRequest userPreferRequest
+    ) {
+        return responseService.getSingleResult(usersService.createPrefer(userPreferRequest));
+    }
+
+    @GetMapping("/prefer")
+    @Operation(summary = "해당 유저 선호 조회", description = "해당 유저의 선호를 조회합니다.")
+    public SingleResult<UserPreferResponse> getPrefer(
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token
+    ) {
+        return responseService.getSingleResult(usersService.getPrefer());
+    }
+
+    @PutMapping("/prefer")
+    @Operation(summary = "해당 유저 선호 수정", description = "해당 유저의 선호를 수정합니다.")
+    public SingleResult<UserPreferResponse> updatePrefer(
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token,
+            @RequestBody UserPreferRequest userPreferRequest
+    ) {
+        return responseService.getSingleResult(usersService.updatePrefer(userPreferRequest));
     }
 
 

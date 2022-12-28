@@ -2,8 +2,10 @@ package grima.kuhaejwo.domain.user.service;
 
 import grima.kuhaejwo.config.security.JwtProvider;
 import grima.kuhaejwo.domain.mateoffer.dto.MateOfferResponse;
+import grima.kuhaejwo.domain.user.dao.UserPreferRepository;
 import grima.kuhaejwo.domain.user.dao.UsersRepository;
 import grima.kuhaejwo.domain.user.domain.BasicInfo;
+import grima.kuhaejwo.domain.user.domain.Prefer;
 import grima.kuhaejwo.domain.user.domain.UserInfoDetail;
 import grima.kuhaejwo.domain.user.domain.Users;
 import grima.kuhaejwo.domain.user.dto.*;
@@ -16,13 +18,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UsersService {
 
     private final UsersRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtProvider jwtProvider;
+    private final UserPreferRepository userPreferRepository;
 
     //반환 값 무엇으로 할까요
     @Transactional
@@ -98,6 +103,41 @@ public class UsersService {
                 .userBasicInfoResponse(new UserBasicInfoResponse(user.getBasicInfo()))
                 .userInfoDetailResponse(new UserInfoDetailResponse(user.getUserInfoDetail()))
                 .build();
+    }
+
+    @Transactional
+    public UserPreferResponse createPrefer(UserPreferRequest userPreferRequest) {
+        Users user = getUser();
+        List<String> contents = userPreferRequest.getContents();
+        List<Prefer> prefers = new ArrayList<>();
+        for (String content : contents) {
+            Prefer prefer = new Prefer(user, content);
+            prefers.add(prefer);
+            user.getPrefers().add(prefer);
+        }
+        userPreferRepository.saveAll(prefers);
+
+        return new UserPreferResponse(contents);
+    }
+
+    @Transactional
+    public UserPreferResponse getPrefer() {
+        Users user = getUser();
+        List<Prefer> prefers = user.getPrefers();
+        return new UserPreferResponse(prefers.stream().map(o -> new String(o.getContent())).collect(Collectors.toList()));
+    }
+
+    @Transactional
+    public UserPreferResponse updatePrefer(UserPreferRequest userPreferRequest) {
+        Users user = getUser();
+        List<String> contents = userPreferRequest.getContents();
+        userPreferRepository.deleteAllInBatch(user.getPrefers());
+        for (String content : contents) {
+            Prefer prefer = new Prefer(user, content);
+            userPreferRepository.save(prefer);
+            user.getPrefers().add(prefer);
+        }
+        return new UserPreferResponse(contents);
     }
 
 
