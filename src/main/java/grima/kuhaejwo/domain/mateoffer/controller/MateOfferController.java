@@ -57,7 +57,6 @@ public class MateOfferController {
     @GetMapping("/list")
     @Operation(summary = "룸메 글 리스트 조회", description = "룸메 올리는 글 리스트들을 조회합니다.")
     public ListResult<MateOfferResponse> getMateOfferList(
-            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token
     ) {
         return responseService.getListResult(mateOfferService.getMateOfferList());
     }
