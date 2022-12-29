@@ -59,7 +59,11 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/",
                         "/api/login",
-                        "/api/signup").permitAll()
+                        "/api/signup",
+                        "/exception/**",
+                        "/profile",
+                        "/health",
+                        "/api/mateoffer/list").permitAll()
                 .antMatchers("/admin/**")
                 .hasRole("USER")
                 .anyRequest()

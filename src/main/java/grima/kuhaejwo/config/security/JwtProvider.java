@@ -5,6 +5,7 @@ package grima.kuhaejwo.config.security;
 import grima.kuhaejwo.domain.user.domain.UserRole;
 import grima.kuhaejwo.domain.user.service.CustomMemberDetailService;
 import grima.kuhaejwo.except.CAuthenticationEntryPointException;
+import grima.kuhaejwo.except.auth.TokenFailedException;
 import grima.kuhaejwo.token.TokenDto;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
