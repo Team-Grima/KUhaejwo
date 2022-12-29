@@ -2,16 +2,14 @@ package grima.kuhaejwo.domain.user.dto;
 
 import grima.kuhaejwo.domain.mateoffer.dto.MateOfferResponse;
 import grima.kuhaejwo.domain.user.domain.UserRole;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class UserResponse {
     private Long id;
