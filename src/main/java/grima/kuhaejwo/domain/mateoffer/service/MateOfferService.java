@@ -28,12 +28,10 @@ public class MateOfferService {
 
     private final MateOfferRepository mateOfferRepository;
     private final UsersRepository userRepository;
-    private final JwtProvider jwtProvider;
 
 
     @Transactional
     public MateOfferResponse createMateOffer(MateOfferRequest mateOfferRequest) {
-
         Users user = getUser();
         //Users user = userRepository.findById(getUserDetails()).orElseThrow(UserNotFoundException::new);
         //Users user = getUserDetails();
