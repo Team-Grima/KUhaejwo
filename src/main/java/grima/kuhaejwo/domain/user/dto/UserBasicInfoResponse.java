@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 public class UserBasicInfoResponse {
     private String college;

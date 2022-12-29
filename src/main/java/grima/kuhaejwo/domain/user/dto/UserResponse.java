@@ -18,6 +18,7 @@ public class UserResponse {
     private UserInfoDetailResponse userInfoDetailResponse;
     private UserBasicInfoResponse userBasicInfoResponse;
     private MateOfferResponse mateOfferResponse;
+    private UserPreferResponse userPreferResponse;
     private String mobileNumber;
     private String name;
     private String email;

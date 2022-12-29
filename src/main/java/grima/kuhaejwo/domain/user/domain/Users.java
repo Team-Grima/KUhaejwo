@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@DynamicInsert
 @Table(name = "users")
 public class Users implements UserDetails {
 
@@ -41,22 +44,26 @@ public class Users implements UserDetails {
     @JoinColumn(name = "mateOffer_id")
     private MateOffer mateOffer;
 
+    @ColumnDefault("0")
     private String mobileNumber;
 
+    @ColumnDefault("")
     private String name;
+    @ColumnDefault("0")
     private String email;
 
     private String password;
 
+    @ColumnDefault("0")
     private Boolean emailAuth;
 
+    @ColumnDefault("0")
     private Boolean dormitory;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<Prefer> prefers = new ArrayList<>();
 
     public Users(String email, String password, String name) {
-
         this.email = email;
         this.password = password;
         this.name = name;
@@ -91,6 +98,10 @@ public class Users implements UserDetails {
     @Override
     public boolean isEnabled() {
         return false;
+    }
+
+    public BasicInfo getBasicInfo() {
+        return this.basicInfo == null ? new BasicInfo() : this.basicInfo;
     }
 
     public void setBasicInfo(BasicInfo basicInfo) {

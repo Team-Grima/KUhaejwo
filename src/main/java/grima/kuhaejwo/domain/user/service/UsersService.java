@@ -40,7 +40,7 @@ public class UsersService {
 
     @Transactional
     public UserBasicInfoResponse getInfo() {
-        Users user = getUserDetails();
+        Users user = getUser();
         return new UserBasicInfoResponse(user.getBasicInfo());
     }
     //업데이트 부분 어떻게 할까요
@@ -62,7 +62,7 @@ public class UsersService {
 
     @Transactional
     public UserInfoDetailResponse getInfoDetail() {
-        Users user = getUserDetails();
+        Users user = getUser();
         return new UserInfoDetailResponse(user.getUserInfoDetail());
     }
 
@@ -76,7 +76,7 @@ public class UsersService {
 
     @Transactional
     public UserResponse getInfoAll() {
-        Users user = getUserDetails();
+        Users user = getUser();
         return UserResponse.builder()
                 .dormitory(user.getDormitory())
                 .email(user.getEmail())
@@ -87,8 +87,10 @@ public class UsersService {
                 .name(user.getName())
                 .userBasicInfoResponse(new UserBasicInfoResponse(user.getBasicInfo()))
                 .userInfoDetailResponse(new UserInfoDetailResponse(user.getUserInfoDetail()))
+                .userPreferResponse(new UserPreferResponse(user.getPrefers()))
                 .build();
     }
+
     @Transactional
     public UserResponse getInfoAllById(Long userId){
         Users user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -102,6 +104,7 @@ public class UsersService {
                 .name(user.getName())
                 .userBasicInfoResponse(new UserBasicInfoResponse(user.getBasicInfo()))
                 .userInfoDetailResponse(new UserInfoDetailResponse(user.getUserInfoDetail()))
+                .userPreferResponse(new UserPreferResponse(user.getPrefers()))
                 .build();
     }
 
@@ -117,14 +120,14 @@ public class UsersService {
         }
         userPreferRepository.saveAll(prefers);
 
-        return new UserPreferResponse(contents);
+        return new UserPreferResponse(prefers);
     }
 
     @Transactional
     public UserPreferResponse getPrefer() {
         Users user = getUser();
         List<Prefer> prefers = user.getPrefers();
-        return new UserPreferResponse(prefers.stream().map(o -> new String(o.getContent())).collect(Collectors.toList()));
+        return new UserPreferResponse(prefers);
     }
 
     @Transactional
@@ -137,7 +140,7 @@ public class UsersService {
             userPreferRepository.save(prefer);
             user.getPrefers().add(prefer);
         }
-        return new UserPreferResponse(contents);
+        return new UserPreferResponse(user.getPrefers());
     }
 
 
