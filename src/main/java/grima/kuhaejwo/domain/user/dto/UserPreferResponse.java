@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class UserPreferResponse {
-    private List<String> contents = new ArrayList<>();
+    private List<String> preferList = new ArrayList<>();
 
     public UserPreferResponse(List<Prefer> prefers) {
-        this.contents= prefers.stream().map(o -> new String(o.getContent())).collect(Collectors.toList());
+        this.preferList= prefers.stream().map(o -> new String(o.getContent())).collect(Collectors.toList());
     }
 }
