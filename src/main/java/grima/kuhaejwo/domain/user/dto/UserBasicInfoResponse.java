@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 public class UserBasicInfoResponse {
     private String college;
@@ -25,7 +23,7 @@ public class UserBasicInfoResponse {
         this.department= basicInfo.getDepartment();
         this.studentId= basicInfo.getStudentId();
         this.age = basicInfo.getAge();
-        this.mbti = getMbti();
+        this.mbti = basicInfo.getMbti();
         this.gender=basicInfo.getGender();
     }
 }

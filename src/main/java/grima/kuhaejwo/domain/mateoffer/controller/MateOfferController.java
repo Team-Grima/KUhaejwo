@@ -32,43 +32,42 @@ public class MateOfferController {
     @Operation(summary = "룸메 글 생성", description = "룸메 올리는 글을 생성합니다.")
     public SingleResult<MateOfferResponse> createMateOffer(
             @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token,
-            HttpServletRequest request,
             @RequestBody MateOfferRequest mateOfferRequest
     ) {
-        return responseService.getSingleResult(mateOfferService.createMateOffer(jwtProvider.resolveToken(request), mateOfferRequest));
+        return responseService.getSingleResult(mateOfferService.createMateOffer(mateOfferRequest));
     }
 
     @GetMapping()
     @Operation(summary = "룸메 글 조회", description = "룸메 올리는 글을 조회합니다.")
     public SingleResult<MateOfferResponse> getMateOffer(
-            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token,
-            HttpServletRequest request
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token
     ) {
-        return responseService.getSingleResult(mateOfferService.getMateOffer(jwtProvider.resolveToken(request)));
+        return responseService.getSingleResult(mateOfferService.getMateOffer());
     }
 
     @PutMapping()
     @Operation(summary = "룸메 글 수정", description = "룸메 올리는 글을 수정합니다.")
     public SingleResult<MateOfferResponse> updateMateOffer(
             @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token,
-            HttpServletRequest request,
             @RequestBody MateOfferRequest mateOfferRequest
     ) {
-        return responseService.getSingleResult(mateOfferService.updateMateOffer(jwtProvider.resolveToken(request), mateOfferRequest));
+        return responseService.getSingleResult(mateOfferService.updateMateOffer(mateOfferRequest));
     }
 
     @GetMapping("/list")
     @Operation(summary = "룸메 글 리스트 조회", description = "룸메 올리는 글 리스트들을 조회합니다.")
-    public ListResult<MateOfferResponse> getMateOfferList() {
+    public ListResult<MateOfferResponse> getMateOfferList(
+    ) {
         return responseService.getListResult(mateOfferService.getMateOfferList());
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "룸메 글 조회 By Id", description = "룸메 올리는 글을 Id를 통해 조회합니다.")
     public SingleResult<MateOfferResponse> getMateOfferById(
-            @Parameter(name="id",description = "MateOffer Id",in = ParameterIn.PATH) @PathVariable Long id
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token,
+            @Parameter(name="id",description = "User Id",in = ParameterIn.PATH) @PathVariable Long id
     ) {
-        return responseService.getSingleResult(mateOfferService.getMateOfferById(id));
+        return responseService.getSingleResult(mateOfferService.getMateOfferByUserId(id));
     }
 }
 

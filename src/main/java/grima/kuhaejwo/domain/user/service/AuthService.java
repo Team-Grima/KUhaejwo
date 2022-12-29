@@ -1,7 +1,10 @@
 package grima.kuhaejwo.domain.user.service;
 
 import grima.kuhaejwo.config.security.JwtProvider;
+import grima.kuhaejwo.domain.mateoffer.domain.MateOffer;
 import grima.kuhaejwo.domain.user.dao.UsersRepository;
+import grima.kuhaejwo.domain.user.domain.BasicInfo;
+import grima.kuhaejwo.domain.user.domain.UserInfoDetail;
 import grima.kuhaejwo.domain.user.domain.Users;
 import grima.kuhaejwo.domain.user.dto.UserLoginRequest;
 import grima.kuhaejwo.domain.user.dto.UserSignupRequest;
@@ -16,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +38,13 @@ public class AuthService {
 //        return usersRepository.save(userSignupRequest.toEntity(passwordEncoder)).getId();
         if(usersRepository.findByEmail(userSignupRequest.getEmail()).isPresent())
             throw new SignUpFailedException();
-        return usersRepository.save(userSignupRequest.toEntity(passwordEncoder)).getId();
+        Users user = usersRepository.save(userSignupRequest.toEntity(passwordEncoder));
+        user.setBasicInfo(new BasicInfo());
+        user.setInfoDetail(new UserInfoDetail());
+        user.setPrefers(new ArrayList<>());
+        user.setMateOffer(new MateOffer());
+        usersRepository.save(user);
+        return user.getId();
     }
 
     @Transactional

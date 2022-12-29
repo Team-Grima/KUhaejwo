@@ -1,15 +1,16 @@
 package grima.kuhaejwo.domain.user.domain;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 @Embeddable
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class BasicInfo {
     private String college;
     private String department;
@@ -19,4 +20,6 @@ public class BasicInfo {
 
     @Enumerated(value=EnumType.STRING)
     private Gender gender;
+
+
 }
