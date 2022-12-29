@@ -111,15 +111,16 @@ public class UsersService {
     @Transactional
     public UserPreferResponse createPrefer(UserPreferRequest userPreferRequest) {
         Users user = getUser();
-        List<String> contents = userPreferRequest.getContents();
+        List<String> contents = userPreferRequest.getPreferList();
         List<Prefer> prefers = new ArrayList<>();
+        if (user.getPrefers() != null) {
+            userPreferRepository.deleteAllInBatch(user.getPrefers());
+        }
         for (String content : contents) {
             Prefer prefer = new Prefer(user, content);
             prefers.add(prefer);
-            user.getPrefers().add(prefer);
         }
         userPreferRepository.saveAll(prefers);
-
         return new UserPreferResponse(prefers);
     }
 
@@ -133,14 +134,17 @@ public class UsersService {
     @Transactional
     public UserPreferResponse updatePrefer(UserPreferRequest userPreferRequest) {
         Users user = getUser();
-        List<String> contents = userPreferRequest.getContents();
-        userPreferRepository.deleteAllInBatch(user.getPrefers());
+        List<String> contents = userPreferRequest.getPreferList();
+        List<Prefer> prefers = new ArrayList<>();
+        if (user.getPrefers() != null) {
+            userPreferRepository.deleteAllInBatch(user.getPrefers());
+        }
         for (String content : contents) {
             Prefer prefer = new Prefer(user, content);
-            userPreferRepository.save(prefer);
-            user.getPrefers().add(prefer);
+            prefers.add(prefer);
         }
-        return new UserPreferResponse(user.getPrefers());
+        userPreferRepository.saveAll(prefers);
+        return new UserPreferResponse(prefers);
     }
 
 

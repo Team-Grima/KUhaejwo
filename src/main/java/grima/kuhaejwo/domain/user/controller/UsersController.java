@@ -112,7 +112,7 @@ public class UsersController {
     }
 
     @PostMapping("/prefer")
-    @Operation(summary = "해당 유저 선호 추가", description = "해당 유저에게 선호를 추가합니다.")
+    @Operation(summary = "해당 유저 선호 생성", description = "해당 유저에게 선호를 생성합니다.")
     public SingleResult<UserPreferResponse> createPrefer(
             @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token,
             @RequestBody UserPreferRequest userPreferRequest
