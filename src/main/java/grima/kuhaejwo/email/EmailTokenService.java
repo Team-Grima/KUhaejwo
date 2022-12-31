@@ -42,7 +42,7 @@ public class EmailTokenService {
         mailMessage.setText("http://13.209.48.23/confirm-email?token="+emailToken.getId());
         emailSenderService.sendEmail(mailMessage);
 
-        return emailToken.getId();    // 인증메일 전송 시 토큰 반환
+        return receiverEmail;    // 인증메일 전송 시 토큰 반환
 
     }
 
