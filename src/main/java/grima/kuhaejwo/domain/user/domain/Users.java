@@ -117,4 +117,8 @@ public class Users implements UserDetails {
     public void setPrefers(List<Prefer> prefers) {
         this.prefers = prefers;
     }
+
+    public void setEmailAuth(Boolean emailAuth) {
+        this.emailAuth = emailAuth;
+    }
 }
