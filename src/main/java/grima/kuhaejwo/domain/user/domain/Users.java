@@ -62,6 +62,7 @@ public class Users implements UserDetails {
     private List<Prefer> prefers = new ArrayList<>();
 
     public Users(String email, String password, String name) {
+        this.emailAuth=Boolean.FALSE;
         this.email = email;
         this.password = password;
         this.name = name;
