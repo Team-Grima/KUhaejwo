@@ -8,6 +8,7 @@ import grima.kuhaejwo.domain.user.domain.BasicInfo;
 import grima.kuhaejwo.domain.user.domain.Prefer;
 import grima.kuhaejwo.domain.user.domain.UserInfoDetail;
 import grima.kuhaejwo.domain.user.domain.Users;
+import grima.kuhaejwo.domain.user.domain.detail.*;
 import grima.kuhaejwo.domain.user.dto.*;
 import grima.kuhaejwo.except.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -145,6 +146,100 @@ public class UsersService {
         }
         userPreferRepository.saveAll(prefers);
         return new UserPreferResponse(prefers);
+    }
+
+    public static int preference(UserInfoDetail user , UserInfoDetail writer){
+//        enum Which{
+//            WELL_CLEAN,
+//            ONE_CLEAN,
+//            NO_DRINK,
+//            NO_SMOKE,
+//            SAME_SLEEP,
+//            SAME_WAKE,
+//            NO_SLEEP_HABIT,
+//            NO_YEMIN,
+//            NO_COLD,
+//            NO_HOT,
+//            GOOD_FRIEND;
+//        }
+        double preference=100;
+        System.out.println(preference);
+        for(int i=0;i<3;i++){
+            //user.which[i].ordinal()+1
+            switch(1){
+                case 1:
+                    if(writer.getCleanHabit()== CleanHabit.valueOf("LAZY"))
+                        preference*=0.7;
+                    else
+                        preference*=1.3;
+                    break;
+                case 2:
+                    if(writer.getCleanHabit()==CleanHabit.valueOf("EAGER"))
+                        preference*=0.7;
+                    else
+                        preference*=1.3;
+                    break;
+                case 3:
+                    if(writer.getAlcohol()== Alcohol.valueOf("OFTEN"))
+                        preference*=0.5;
+                    else if(writer.getAlcohol()==Alcohol.valueOf("YES"))
+                        preference*=0.7;
+                    else
+                        preference*=1.3;
+                    break;
+                case 4:
+                    if(writer.getSmoking()== Smoking.valueOf("YES"))
+                        preference*=0.6;
+                    else
+                        preference*=1.3;
+                    break;
+                case 5:
+                    preference*=1-Math.abs(writer.getSleepingTime().ordinal()-user.getSleepingTime().ordinal())/3.0;
+                    break;
+                case 6:
+                    preference*=1-Math.abs(writer.getWakeUpTime().ordinal()-user.getWakeUpTime().ordinal())/3.0;
+                    break;
+                case 7:
+                    if(writer.getSleepingHabit()== SleepingHabit.valueOf("NO"))
+                        preference*=1.3;
+                    else
+                        preference*=0.7;
+                    break;
+                case 8:
+                    if(writer.getSleeper()== Sleeper.valueOf("LIGHT"))
+                        preference*=0.7;
+                    else
+                        preference*=1.3;
+                    break;
+                case 9:
+                    if(writer.getTemperature()==Temperature.valueOf("COLD"))
+                        preference*=0.7;
+                    else
+                        preference*=1.3;
+                    break;
+                case 10:
+                    if(writer.getTemperature()==Temperature.valueOf("HEAT"))
+                        preference*=0.7;
+                    else
+                        preference*=1.3;
+                    break;
+                case 11:
+                    if(writer.getFriend()==Friend.valueOf("FRIEND_WITH_BENEFIT"))
+                        preference*=0.7;
+                    else
+                        preference*=1.3;
+                    break;
+
+                default:
+                    break;
+
+            }
+            System.out.println(preference);
+        }
+
+
+        System.out.println(preference);
+        return (int)Math.round(preference);
     }
 
 
