@@ -63,7 +63,8 @@ public class SecurityConfig {
                         "/exception/**",
                         "/profile",
                         "/health",
-                        "/api/mateoffer/list").permitAll()
+                        "/api/mateoffer/list",
+                        "/confirm-email").permitAll()
                 .antMatchers("/admin/**")
                 .hasRole("USER")
                 .anyRequest()

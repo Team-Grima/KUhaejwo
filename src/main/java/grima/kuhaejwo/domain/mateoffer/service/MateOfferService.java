@@ -35,6 +35,9 @@ public class MateOfferService {
         Users user = getUser();
         //Users user = userRepository.findById(getUserDetails()).orElseThrow(UserNotFoundException::new);
         //Users user = getUserDetails();
+        if (user.getMateOffer() != null) {
+            mateOfferRepository.delete(user.getMateOffer());
+        }
         MateOffer mateOffer = mateOfferRequest.toEntity(user);
         mateOfferRepository.save(mateOffer);
         user.setMateOffer(mateOffer);
@@ -50,6 +53,9 @@ public class MateOfferService {
     @Transactional
     public MateOfferResponse updateMateOffer(MateOfferRequest mateOfferRequest) {
         Users user = getUser();
+        if (user.getMateOffer() != null) {
+            mateOfferRepository.delete(user.getMateOffer());
+        }
         MateOffer mateOffer = mateOfferRequest.toEntity(user);
         mateOfferRepository.save(mateOffer);
         user.setMateOffer(mateOffer);

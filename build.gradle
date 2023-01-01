@@ -31,6 +31,25 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	//validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// 외부 브로커 사용
+	implementation 'org.springframework.boot:spring-boot-starter-reactor-netty'
+	// WebSocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	// sockjs
+	implementation 'org.webjars:sockjs-client:1.5.1'
+	// stomp
+	implementation 'org.webjars:stomp-websocket:2.3.4'
+	// gson
+	implementation 'com.google.code.gson:gson:2.10'
+	//jackson2json에서 LocalDateTime을 handling 하기 위해
+	implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.4'
+
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	testImplementation 'org.springframework.amqp:spring-rabbit-test'
+	//Mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	//Basic
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'

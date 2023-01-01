@@ -20,7 +20,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@DynamicInsert
 @Table(name = "users")
 public class Users implements UserDetails {
 
@@ -44,26 +43,26 @@ public class Users implements UserDetails {
     @JoinColumn(name = "mateOffer_id")
     private MateOffer mateOffer;
 
-    @ColumnDefault("0")
+
     private String mobileNumber;
 
-    @ColumnDefault("")
     private String name;
-    @ColumnDefault("0")
+
     private String email;
 
     private String password;
 
-    @ColumnDefault("0")
+
     private Boolean emailAuth;
 
-    @ColumnDefault("0")
+
     private Boolean dormitory;
 
     @OneToMany(mappedBy = "users", fetch = FetchType.LAZY)
     private List<Prefer> prefers = new ArrayList<>();
 
     public Users(String email, String password, String name) {
+        this.emailAuth=Boolean.FALSE;
         this.email = email;
         this.password = password;
         this.name = name;
@@ -118,5 +117,9 @@ public class Users implements UserDetails {
 
     public void setPrefers(List<Prefer> prefers) {
         this.prefers = prefers;
+    }
+
+    public void setEmailAuth(Boolean emailAuth) {
+        this.emailAuth = emailAuth;
     }
 }

@@ -1,5 +1,6 @@
 package grima.kuhaejwo.domain.mateoffer.domain;
 
+import grima.kuhaejwo.domain.user.domain.BasicInfo;
 import grima.kuhaejwo.domain.user.domain.Users;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -47,6 +48,9 @@ public class MateOffer {
         this.body = body;
         this.matching = matching;
         this.goodnessOfFit = goodnessOfFit;
+    }
+    public UserProfile getUserProfile() {
+        return this.userProfile == null ? new UserProfile() : this.userProfile;
     }
 
     public void setUser(Users user) {

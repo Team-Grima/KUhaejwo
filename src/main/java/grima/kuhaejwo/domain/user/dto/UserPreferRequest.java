@@ -10,6 +10,6 @@ import java.util.List;
 @Getter
 @Setter
 public class UserPreferRequest {
-    private List<String> contents = new ArrayList<>();
+    private List<String> preferList= new ArrayList<>();
 
 }
