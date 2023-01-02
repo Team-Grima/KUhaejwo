@@ -67,6 +67,11 @@ public class Users implements UserDetails {
     private List<Prefer> prefers = new ArrayList<>();
 
     public Users(String email, String password, String name) {
+        ProfileImage image = ProfileImage.builder()
+                .fileOriName("defualt")
+                .fileUrl("images/basicImage.jpeg")
+                .build();
+        this.setProfileImage(image);
         this.emailAuth=Boolean.FALSE;
         this.email = email;
         this.password = password;
