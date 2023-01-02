@@ -38,6 +38,11 @@ public class Users implements UserDetails {
     @Embedded
     private BasicInfo basicInfo;
 
+    @Embedded
+    private ProfileImage profileImage;
+
+    @Embedded
+    private PassImage passImage;
     // mateOffer 엔티티에도 fetch 를 지연로딩으로 바꿔야 하는가? cascade 또한 어떻게 설정 해야하는가
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "mateOffer_id")
@@ -62,6 +67,11 @@ public class Users implements UserDetails {
     private List<Prefer> prefers = new ArrayList<>();
 
     public Users(String email, String password, String name) {
+        ProfileImage image = ProfileImage.builder()
+                .fileOriName("defualt")
+                .fileUrl("images/basicImage.jpeg")
+                .build();
+        this.setProfileImage(image);
         this.emailAuth=Boolean.FALSE;
         this.email = email;
         this.password = password;
@@ -121,5 +131,13 @@ public class Users implements UserDetails {
 
     public void setEmailAuth(Boolean emailAuth) {
         this.emailAuth = emailAuth;
+    }
+
+    public void setProfileImage(ProfileImage profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public void setPassImage(PassImage passImage) {
+        this.passImage = passImage;
     }
 }

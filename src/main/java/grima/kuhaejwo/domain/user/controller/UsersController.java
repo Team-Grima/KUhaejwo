@@ -11,10 +11,16 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @Tag(name = "Users Controller", description = "유저 관련 컨트롤러")
 @RequiredArgsConstructor
@@ -27,6 +33,7 @@ public class UsersController {
 
     /**
      * 유저 기본 정보
+     *
      * @param token
      */
     @PostMapping("/info")
@@ -57,6 +64,7 @@ public class UsersController {
 
     /**
      * 유저 세부 정보
+     *
      * @param
      */
 
@@ -102,12 +110,13 @@ public class UsersController {
     ) {
         return responseService.getSingleResult(usersService.getInfoAll());
     }
+
     @GetMapping("/{id}")
     @Operation(summary = "해당 유저 모든 정보 조회", description = "해당 유저의 모든 정보를 id로 조회합니다.")
     public SingleResult<UserResponse> getInfoAllById(
             @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token,
-            @Parameter(name="id",description = "User Id",in = ParameterIn.PATH) @PathVariable Long id
-    ){
+            @Parameter(name = "id", description = "User Id", in = ParameterIn.PATH) @PathVariable Long id
+    ) {
         return responseService.getSingleResult(usersService.getInfoAllById(id));
     }
 
@@ -137,6 +146,54 @@ public class UsersController {
         return responseService.getSingleResult(usersService.updatePrefer(userPreferRequest));
     }
 
+    @PostMapping(value = "/profileImage" ,consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
+    @Operation(summary = "해당 유저 프로필 사진 생성", description = "해당 유저의 프로필 사진을 생성합니다.")
+    public SingleResult<String> createProfileImage(
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token,
+            @RequestParam MultipartFile file
+    ) throws IOException {
+        return responseService.getSingleResult(usersService.createProfileImage(file));
+    }
 
+    @GetMapping("/profileImage")
+    @Operation(summary = "해당 유저 프로필 사진 조회", description = "해당 유저의 프로필 사진을 조회합니다.")
+    public ResponseEntity<Resource> getProfileImage (
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token
+    ) throws IOException{
+        return usersService.getProfileImage();
+    }
 
+    //img파일 썸네일
+    @GetMapping("/profileImage2")
+    @Operation(summary = "해당 유저 프로필 사진 조회", description = "해당 유저의 프로필 사진을 조회합니다.")
+    public ResponseEntity<byte[]> getProfileImage2(
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token
+    ){
+        return usersService.getProfileImage2();
+    }
+
+    @GetMapping("/profileIamge3")
+    @Operation(summary = "해당 유저 프로필 사진 조회", description = "해당 유저의 프로필 사진을 조회합니다.")
+    public SingleResult<String> getProfileImage3(
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token
+    ){
+        return responseService.getSingleResult(usersService.getProfileImage3());
+    }
+
+    @PostMapping(value = "/passImage" ,consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
+    @Operation(summary = "해당 유저 합격증 사진 업로드", description = "해당 유저의 합격증 사진 업로드합니다.")
+    public SingleResult<String> createPassImage(
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token,
+            @RequestParam MultipartFile file
+    ) throws IOException {
+        return responseService.getSingleResult(usersService.createPassImage(file));
+    }
+
+    @GetMapping("/passImage")
+    @Operation(summary = "해당 유저 합격증 사진 조회", description = "해당 유저의 합격증 사진을 조회합니다.")
+    public ResponseEntity<byte[]> getPassImage (
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token
+    ){
+        return usersService.getPassImage();
+    }
 }
