@@ -1,27 +1,39 @@
 package grima.kuhaejwo.domain.user.service;
 
-import grima.kuhaejwo.config.security.JwtProvider;
+
 import grima.kuhaejwo.domain.mateoffer.dto.MateOfferResponse;
 import grima.kuhaejwo.domain.user.dao.UserPreferRepository;
 import grima.kuhaejwo.domain.user.dao.UsersRepository;
-import grima.kuhaejwo.domain.user.domain.BasicInfo;
-import grima.kuhaejwo.domain.user.domain.Prefer;
-import grima.kuhaejwo.domain.user.domain.UserInfoDetail;
-import grima.kuhaejwo.domain.user.domain.Users;
+import grima.kuhaejwo.domain.user.domain.*;
 import grima.kuhaejwo.domain.user.domain.detail.*;
 import grima.kuhaejwo.domain.user.dto.*;
 import grima.kuhaejwo.except.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -240,6 +252,173 @@ public class UsersService {
 
         System.out.println(preference);
         return (int)Math.round(preference);
+    }
+
+    @Transactional
+    public String createProfileImage(MultipartFile multipartFile) throws IOException {
+        Users user = getUser();
+
+        // 파일 이름을 업로드 한 날짜로 바꾸어서 저장할 것이다
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        String current_date = simpleDateFormat.format(new Date());
+
+        // 프로젝트 폴더에 저장하기 위해 절대경로를 설정 (Window 의 Tomcat 은 Temp 파일을 이용한다)
+        String absolutePath = new File("").getAbsolutePath() + "/";
+        // 경로를 지정하고 그곳에다가 저장할 심산이다
+        String path = "images/" + current_date;
+        File file = new File(path);
+        // 저장할 위치의 디렉토리가 존지하지 않을 경우
+        if (!file.exists()) {
+            // mkdir() 함수와 다른 점은 상위 디렉토리가 존재하지 않을 때 그것까지 생성
+            file.mkdirs();
+        }
+
+        if (!multipartFile.isEmpty()) {
+            // jpeg, png, gif 파일들만 받아서 처리할 예정
+            String contentType = multipartFile.getContentType();
+            String originalFileExtension;
+            // 확장자 명이 없으면 이 파일은 잘 못 된 것이다
+            if (ObjectUtils.isEmpty(contentType)) {
+                throw new RuntimeException();
+            } else {
+                if (contentType.contains("image/jpeg")) {
+                    originalFileExtension = ".jpg";
+                } else if (contentType.contains("image/png")) {
+                    originalFileExtension = ".png";
+                } else if (contentType.contains("image/gif")) {
+                    originalFileExtension = ".gif";
+                }
+                // 다른 파일 명이면 아무 일 하지 않는다
+                else {
+                    throw new RuntimeException();
+                }
+            }
+            // 각 이름은 겹치면 안되므로 나노 초까지 동원하여 지정
+            String new_file_name = Long.toString(System.nanoTime()) + originalFileExtension;
+            ProfileImage image = ProfileImage.builder()
+                    .fileOriName(multipartFile.getOriginalFilename())
+                    .fileUrl(path+"/"+new_file_name)
+                    .build();
+
+            user.setProfileImage(image);
+            file = new File(absolutePath + path + "/" + new_file_name);
+            multipartFile.transferTo(file);
+        }
+        return path;
+    }
+
+    @Transactional
+    public ResponseEntity<Resource> getProfileImage() throws IOException {
+        Users user = getUser();
+        String imgPath = user.getProfileImage().getFileUrl();
+        String absolutePath = new File("").getAbsolutePath() + "/";
+        Path path = Paths.get(absolutePath + imgPath);
+        String contentType = Files.probeContentType(path);
+        System.out.println("contentType = " + contentType);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDisposition(
+                ContentDisposition.builder("attachment")
+                        .filename(user.getProfileImage().getFileOriName(), StandardCharsets.UTF_8)
+                        .build());
+        headers.add(HttpHeaders.CONTENT_TYPE, contentType);
+        System.out.println("headers = " + headers);
+        Resource resource = new InputStreamResource(Files.newInputStream(path));
+        System.out.println("resource = " + resource);
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+
+    }
+    @Transactional
+    public ResponseEntity<byte[]> getProfileImage2() {
+        Users user = getUser();
+        String imgPath = user.getProfileImage().getFileUrl();
+        String absolutePath = new File("").getAbsolutePath() + "/";
+        File file=new File(absolutePath+imgPath);
+        ResponseEntity<byte[]> result=null;
+        try {
+            HttpHeaders headers=new HttpHeaders();
+            headers.add("Content-Type", Files.probeContentType(file.toPath()));
+            result=new ResponseEntity<>(FileCopyUtils.copyToByteArray(file),headers,HttpStatus.OK );
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    @Transactional
+    public String getProfileImage3() {
+        Users user = getUser();
+        String imgPath = user.getProfileImage().getFileUrl();
+        String absolutePath = new File("").getAbsolutePath() + "/";
+        return "<img src=" + absolutePath + imgPath + ">";
+    }
+
+    @Transactional
+    public String createPassImage(MultipartFile multipartFile) throws IOException {
+        Users user = getUser();
+
+        // 파일 이름을 업로드 한 날짜로 바꾸어서 저장할 것이다
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        String current_date = simpleDateFormat.format(new Date());
+
+        // 프로젝트 폴더에 저장하기 위해 절대경로를 설정 (Window 의 Tomcat 은 Temp 파일을 이용한다)
+        String absolutePath = new File("").getAbsolutePath() + "/";
+        // 경로를 지정하고 그곳에다가 저장할 심산이다
+        String path = "images/" + current_date;
+        File file = new File(path);
+        // 저장할 위치의 디렉토리가 존지하지 않을 경우
+        if (!file.exists()) {
+            // mkdir() 함수와 다른 점은 상위 디렉토리가 존재하지 않을 때 그것까지 생성
+            file.mkdirs();
+        }
+
+        if (!multipartFile.isEmpty()) {
+            // jpeg, png, gif 파일들만 받아서 처리할 예정
+            String contentType = multipartFile.getContentType();
+            String originalFileExtension;
+            // 확장자 명이 없으면 이 파일은 잘 못 된 것이다
+            if (ObjectUtils.isEmpty(contentType)) {
+                throw new RuntimeException();
+            } else {
+                if (contentType.contains("image/jpeg")) {
+                    originalFileExtension = ".jpg";
+                } else if (contentType.contains("image/png")) {
+                    originalFileExtension = ".png";
+                } else if (contentType.contains("image/gif")) {
+                    originalFileExtension = ".gif";
+                }
+                // 다른 파일 명이면 아무 일 하지 않는다
+                else {
+                    throw new RuntimeException();
+                }
+            }
+            // 각 이름은 겹치면 안되므로 나노 초까지 동원하여 지정
+            String new_file_name = Long.toString(System.nanoTime()) + originalFileExtension;
+            PassImage image = PassImage.builder()
+                    .fileOriName(multipartFile.getOriginalFilename())
+                    .fileUrl(path+"/"+new_file_name)
+                    .build();
+
+            user.setPassImage(image);
+            file = new File(absolutePath + path + "/" + new_file_name);
+            multipartFile.transferTo(file);
+        }
+        return path;
+    }
+
+    @Transactional
+    public ResponseEntity<byte[]> getPassImage() {
+        Users user = getUser();
+        String imgPath = user.getPassImage().getFileUrl();
+        String absolutePath = new File("").getAbsolutePath() + "/";
+        File file=new File(absolutePath+imgPath);
+        ResponseEntity<byte[]> result=null;
+        try {
+            HttpHeaders headers=new HttpHeaders();
+            headers.add("Content-Type", Files.probeContentType(file.toPath()));
+            result=new ResponseEntity<>(FileCopyUtils.copyToByteArray(file),headers,HttpStatus.OK );
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
 
