@@ -25,7 +25,9 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -314,16 +316,13 @@ public class UsersService {
         String absolutePath = new File("").getAbsolutePath() + "/";
         Path path = Paths.get(absolutePath + imgPath);
         String contentType = Files.probeContentType(path);
-        System.out.println("contentType = " + contentType);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDisposition(
                 ContentDisposition.builder("attachment")
                         .filename(user.getProfileImage().getFileOriName(), StandardCharsets.UTF_8)
                         .build());
         headers.add(HttpHeaders.CONTENT_TYPE, contentType);
-        System.out.println("headers = " + headers);
         Resource resource = new InputStreamResource(Files.newInputStream(path));
-        System.out.println("resource = " + resource);
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 
     }
@@ -349,6 +348,23 @@ public class UsersService {
         String imgPath = user.getProfileImage().getFileUrl();
         String absolutePath = new File("").getAbsolutePath() + "/";
         return "<img src=" + absolutePath + imgPath + ">";
+    }
+
+    @Transactional
+    public ResponseEntity<OutputStream> getProfileImage4() {
+        Users user = getUser();
+        String imgPath = user.getProfileImage().getFileUrl();
+        String absolutePath = new File("").getAbsolutePath() + "/";
+        File file=new File(absolutePath+imgPath);
+        ResponseEntity<OutputStream> result=null;
+        try {
+            HttpHeaders headers=new HttpHeaders();
+            headers.add("Content-Type", Files.probeContentType(file.toPath()));
+            result=new ResponseEntity<>(new FileOutputStream(file),headers,HttpStatus.OK );
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Transactional

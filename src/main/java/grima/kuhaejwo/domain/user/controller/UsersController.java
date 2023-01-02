@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.OutputStream;
 
 @Tag(name = "Users Controller", description = "유저 관련 컨트롤러")
 @RequiredArgsConstructor
@@ -165,7 +166,7 @@ public class UsersController {
 
     //img파일 썸네일
     @GetMapping("/profileImage2")
-    @Operation(summary = "해당 유저 프로필 사진 조회", description = "해당 유저의 프로필 사진을 조회합니다.")
+    @Operation(summary = "해당 유저 프로필 사진 조회 byte", description = "해당 유저의 프로필 사진을 조회합니다.")
     public ResponseEntity<byte[]> getProfileImage2(
             @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token
     ){
@@ -178,6 +179,14 @@ public class UsersController {
             @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token
     ){
         return responseService.getSingleResult(usersService.getProfileImage3());
+    }
+
+    @GetMapping("/profileIamge4")
+    @Operation(summary = "해당 유저 프로필 사진 조회 outputstream", description = "해당 유저의 프로필 사진을 조회합니다.")
+    public ResponseEntity<OutputStream> getProfileImage4(
+            @Parameter(name = "X-AUTH-TOKEN", description = "로그인 성공 후 AccessToken", in = ParameterIn.HEADER) String token
+    ){
+        return usersService.getProfileImage4();
     }
 
     @PostMapping(value = "/passImage" ,consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
