@@ -2,16 +2,12 @@ package grima.kuhaejwo.domain.user.controller;
 
 import grima.kuhaejwo.config.model.response.SingleResult;
 import grima.kuhaejwo.config.model.service.ResponseService;
-import grima.kuhaejwo.config.security.JwtProvider;
-import grima.kuhaejwo.domain.user.domain.Users;
 import grima.kuhaejwo.domain.user.dto.*;
 import grima.kuhaejwo.domain.user.service.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -19,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.OutputStream;
 

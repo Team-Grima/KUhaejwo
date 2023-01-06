@@ -322,6 +322,8 @@ public class UsersService {
                         .filename(user.getProfileImage().getFileOriName(), StandardCharsets.UTF_8)
                         .build());
         headers.add(HttpHeaders.CONTENT_TYPE, contentType);
+        //InputStreamResource를 반환하면 청크 전송 인코딩을 사용하기에 Resource를 스트리밍 방식으로 조금씩 읽어서 전송한다.
+        // 결과적으로 서버의 Resource를 아낄 수 있다.
         Resource resource = new InputStreamResource(Files.newInputStream(path));
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 
@@ -453,6 +455,16 @@ public class UsersService {
         UserDetails userdetails = (UserDetails) principal;
         Users user = (Users) principal;
         return user;
+    }
+
+    public void docsUserdetails() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails)principal).getUsername();
+        } else {
+            String username = principal.toString();
+        }
     }
 
 }

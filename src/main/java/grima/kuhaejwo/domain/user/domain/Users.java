@@ -1,13 +1,10 @@
 package grima.kuhaejwo.domain.user.domain;
 
 import grima.kuhaejwo.domain.mateoffer.domain.MateOffer;
-import grima.kuhaejwo.domain.user.domain.detail.Sleeper;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -47,6 +44,11 @@ public class Users implements UserDetails {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "mateOffer_id")
     private MateOffer mateOffer;
+
+    @OneToMany
+    private List<Notification> notificationList = new ArrayList<>();
+
+    private String fcmToken;
 
 
     private String mobileNumber;
