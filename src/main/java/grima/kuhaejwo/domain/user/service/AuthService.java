@@ -44,7 +44,9 @@ public class AuthService {
         user.setBasicInfo(new BasicInfo());
         user.setInfoDetail(new UserInfoDetail());
         user.setPrefers(new ArrayList<>());
-        user.setMateOffer(new MateOffer());
+        user.setMateOffer(MateOffer.builder()
+                .matching(false)
+                .build());
         usersRepository.save(user);
         return user.getId();
     }
