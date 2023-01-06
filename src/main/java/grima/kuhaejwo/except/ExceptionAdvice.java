@@ -6,6 +6,8 @@ import grima.kuhaejwo.except.auth.LoginFailedException;
 import grima.kuhaejwo.except.auth.SignUpFailedException;
 import grima.kuhaejwo.except.auth.TokenFailedException;
 import grima.kuhaejwo.except.mateoffer.MateOfferNotFoundException;
+import grima.kuhaejwo.except.user.UserNotificationNotFoundException;
+import grima.kuhaejwo.except.user.UserNotificationNotSameException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +77,18 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult expiredJwtException(HttpServletRequest request, ExpiredJwtException e) {
         return this.responseService.getFailResult("만료된 토큰입니다.");
+    }
+
+    @ExceptionHandler(UserNotificationNotFoundException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult expiredJwtException(HttpServletRequest request, UserNotificationNotFoundException e) {
+        return this.responseService.getFailResult("존재 하지 않는 알림 입니다.");
+    }
+
+    @ExceptionHandler(UserNotificationNotSameException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected CommonResult expiredJwtException(HttpServletRequest request, UserNotificationNotSameException e) {
+        return this.responseService.getFailResult("해당 유저와 알림이 일치하지 않습니다.");
     }
 }
 

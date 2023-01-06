@@ -2,12 +2,15 @@ package grima.kuhaejwo.domain.user.service;
 
 
 import grima.kuhaejwo.domain.mateoffer.dto.MateOfferResponse;
+import grima.kuhaejwo.domain.user.dao.UserNotificationRepository;
 import grima.kuhaejwo.domain.user.dao.UserPreferRepository;
 import grima.kuhaejwo.domain.user.dao.UsersRepository;
 import grima.kuhaejwo.domain.user.domain.*;
 import grima.kuhaejwo.domain.user.domain.detail.*;
 import grima.kuhaejwo.domain.user.dto.*;
 import grima.kuhaejwo.except.user.UserNotFoundException;
+import grima.kuhaejwo.except.user.UserNotificationNotFoundException;
+import grima.kuhaejwo.except.user.UserNotificationNotSameException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.core.io.InputStreamResource;
@@ -25,7 +28,9 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +47,7 @@ public class UsersService {
 
     private final UsersRepository userRepository;
     private final UserPreferRepository userPreferRepository;
-
+    private final UserNotificationRepository userNotificationRepository;
     //반환 값 무엇으로 할까요
     @Transactional
     public UserBasicInfoResponse createInfo(UserBasicInfoRequest userBasicInfoRequest) {
@@ -314,16 +320,15 @@ public class UsersService {
         String absolutePath = new File("").getAbsolutePath() + "/";
         Path path = Paths.get(absolutePath + imgPath);
         String contentType = Files.probeContentType(path);
-        System.out.println("contentType = " + contentType);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDisposition(
                 ContentDisposition.builder("attachment")
                         .filename(user.getProfileImage().getFileOriName(), StandardCharsets.UTF_8)
                         .build());
         headers.add(HttpHeaders.CONTENT_TYPE, contentType);
-        System.out.println("headers = " + headers);
+        //InputStreamResource를 반환하면 청크 전송 인코딩을 사용하기에 Resource를 스트리밍 방식으로 조금씩 읽어서 전송한다.
+        // 결과적으로 서버의 Resource를 아낄 수 있다.
         Resource resource = new InputStreamResource(Files.newInputStream(path));
-        System.out.println("resource = " + resource);
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 
     }
@@ -349,6 +354,23 @@ public class UsersService {
         String imgPath = user.getProfileImage().getFileUrl();
         String absolutePath = new File("").getAbsolutePath() + "/";
         return "<img src=" + absolutePath + imgPath + ">";
+    }
+
+    @Transactional
+    public ResponseEntity<OutputStream> getProfileImage4() {
+        Users user = getUser();
+        String imgPath = user.getProfileImage().getFileUrl();
+        String absolutePath = new File("").getAbsolutePath() + "/";
+        File file=new File(absolutePath+imgPath);
+        ResponseEntity<OutputStream> result=null;
+        try {
+            HttpHeaders headers=new HttpHeaders();
+            headers.add("Content-Type", Files.probeContentType(file.toPath()));
+            result=new ResponseEntity<>(new FileOutputStream(file),headers,HttpStatus.OK );
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Transactional
@@ -421,6 +443,52 @@ public class UsersService {
         return result;
     }
 
+    @Transactional
+    public List<UserNotificationResponse> getNotification() {
+        Users user = getUser();
+        List<Notification> notificationList = userNotificationRepository.findAllByUser_Id(user.getId());
+        return notificationList.stream()
+                .map(o -> new UserNotificationResponse(o))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<UserNotificationResponse> getNotificationNotRead() {
+        Users user = getUser();
+        List<Notification> notificationList = userNotificationRepository.findAllByUser_Id(user.getId());
+        return notificationList.stream()
+                .filter(o->!o.getIsRead())
+                .map(o -> new UserNotificationResponse(o))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public UserNotificationResponse createNotification() {
+        Users user = getUser();
+        Notification notification = Notification.builder()
+                .user(user)
+                .isRead(Boolean.FALSE)
+                .body("test body")
+                .title("test title")
+                .build();
+        userNotificationRepository.save(notification);
+//        user.getNotificationList().add(notification);
+        return new UserNotificationResponse(notification);
+    }
+
+    @Transactional
+    public UserNotificationResponse getNotificationById(Long id) {
+        Users user = getUser();
+        Notification notification = userNotificationRepository.findById(id).orElseThrow(UserNotificationNotFoundException::new);
+        if (notification.getUser().getId() != user.getId()) {
+            throw new UserNotificationNotSameException();
+        }
+        notification.readed();
+        return new UserNotificationResponse(notification);
+    }
+
+
+
 
     //프록시 객체 때문에 써야 하는 것
     public Users getUser() {
@@ -437,6 +505,16 @@ public class UsersService {
         UserDetails userdetails = (UserDetails) principal;
         Users user = (Users) principal;
         return user;
+    }
+
+    public void docsUserdetails() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails)principal).getUsername();
+        } else {
+            String username = principal.toString();
+        }
     }
 
 }

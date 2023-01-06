@@ -2,10 +2,7 @@ package grima.kuhaejwo.domain.mateoffer.domain;
 
 import grima.kuhaejwo.domain.user.domain.BasicInfo;
 import grima.kuhaejwo.domain.user.domain.Users;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -16,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @EntityListeners(AuditingEntityListener.class)
 public class MateOffer {
     @Id
