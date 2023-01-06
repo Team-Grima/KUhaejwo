@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class UserNotificationResponse {
+    private Long id;
     private String title;
 
     private String body;
@@ -18,6 +19,7 @@ public class UserNotificationResponse {
     private LocalDateTime createdAt;
 
     public UserNotificationResponse(Notification notification) {
+        this.id = notification.getId();
         this.title = notification.getTitle();
         this.body = notification.getBody();
         this.isRead = notification.getIsRead();
