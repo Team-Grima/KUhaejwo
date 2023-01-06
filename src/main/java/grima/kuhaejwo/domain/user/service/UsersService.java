@@ -10,6 +10,7 @@ import grima.kuhaejwo.domain.user.domain.detail.*;
 import grima.kuhaejwo.domain.user.dto.*;
 import grima.kuhaejwo.except.user.UserNotFoundException;
 import grima.kuhaejwo.except.user.UserNotificationNotFoundException;
+import grima.kuhaejwo.except.user.UserNotificationNotSameException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.core.io.InputStreamResource;
@@ -452,6 +453,16 @@ public class UsersService {
     }
 
     @Transactional
+    public List<UserNotificationResponse> getNotificationNotRead() {
+        Users user = getUser();
+        List<Notification> notificationList = userNotificationRepository.findAllByUser_Id(user.getId());
+        return notificationList.stream()
+                .filter(o->!o.getIsRead())
+                .map(o -> new UserNotificationResponse(o))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     public UserNotificationResponse createNotification() {
         Users user = getUser();
         Notification notification = Notification.builder()
@@ -461,13 +472,17 @@ public class UsersService {
                 .title("test title")
                 .build();
         userNotificationRepository.save(notification);
-        user.getNotificationList().add(notification);
+//        user.getNotificationList().add(notification);
         return new UserNotificationResponse(notification);
     }
 
     @Transactional
     public UserNotificationResponse getNotificationById(Long id) {
+        Users user = getUser();
         Notification notification = userNotificationRepository.findById(id).orElseThrow(UserNotificationNotFoundException::new);
+        if (notification.getUser().getId() != user.getId()) {
+            throw new UserNotificationNotSameException();
+        }
         notification.readed();
         return new UserNotificationResponse(notification);
     }
