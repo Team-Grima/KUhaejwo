@@ -2,12 +2,14 @@ package grima.kuhaejwo.domain.user.service;
 
 
 import grima.kuhaejwo.domain.mateoffer.dto.MateOfferResponse;
+import grima.kuhaejwo.domain.user.dao.UserNotificationRepository;
 import grima.kuhaejwo.domain.user.dao.UserPreferRepository;
 import grima.kuhaejwo.domain.user.dao.UsersRepository;
 import grima.kuhaejwo.domain.user.domain.*;
 import grima.kuhaejwo.domain.user.domain.detail.*;
 import grima.kuhaejwo.domain.user.dto.*;
 import grima.kuhaejwo.except.user.UserNotFoundException;
+import grima.kuhaejwo.except.user.UserNotificationNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.core.io.InputStreamResource;
@@ -36,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +46,7 @@ public class UsersService {
 
     private final UsersRepository userRepository;
     private final UserPreferRepository userPreferRepository;
-
+    private final UserNotificationRepository userNotificationRepository;
     //반환 값 무엇으로 할까요
     @Transactional
     public UserBasicInfoResponse createInfo(UserBasicInfoRequest userBasicInfoRequest) {
@@ -438,6 +441,38 @@ public class UsersService {
         }
         return result;
     }
+
+    @Transactional
+    public List<UserNotificationResponse> getNotification() {
+        Users user = getUser();
+        List<Notification> notificationList = userNotificationRepository.findAllByUser_Id(user.getId());
+        return notificationList.stream()
+                .map(o -> new UserNotificationResponse(o))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public UserNotificationResponse createNotification() {
+        Users user = getUser();
+        Notification notification = Notification.builder()
+                .user(user)
+                .isRead(Boolean.FALSE)
+                .body("test body")
+                .title("test title")
+                .build();
+        userNotificationRepository.save(notification);
+        user.getNotificationList().add(notification);
+        return new UserNotificationResponse(notification);
+    }
+
+    @Transactional
+    public UserNotificationResponse getNotificationById(Long id) {
+        Notification notification = userNotificationRepository.findById(id).orElseThrow(UserNotificationNotFoundException::new);
+        notification.readed();
+        return new UserNotificationResponse(notification);
+    }
+
+
 
 
     //프록시 객체 때문에 써야 하는 것

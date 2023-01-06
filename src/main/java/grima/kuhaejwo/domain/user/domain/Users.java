@@ -45,7 +45,7 @@ public class Users implements UserDetails {
     @JoinColumn(name = "mateOffer_id")
     private MateOffer mateOffer;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Notification> notificationList = new ArrayList<>();
 
     private String fcmToken;
