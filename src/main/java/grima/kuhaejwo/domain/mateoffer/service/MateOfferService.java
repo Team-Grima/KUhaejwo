@@ -3,6 +3,7 @@ package grima.kuhaejwo.domain.mateoffer.service;
 import grima.kuhaejwo.config.security.JwtProvider;
 import grima.kuhaejwo.domain.mateoffer.dao.MateOfferRepository;
 import grima.kuhaejwo.domain.mateoffer.domain.MateOffer;
+import grima.kuhaejwo.domain.mateoffer.dto.MatchingResponse;
 import grima.kuhaejwo.domain.mateoffer.dto.MateOfferRequest;
 import grima.kuhaejwo.domain.mateoffer.dto.MateOfferResponse;
 import grima.kuhaejwo.domain.user.dao.UsersRepository;
@@ -12,6 +13,7 @@ import grima.kuhaejwo.except.mateoffer.MateOfferNotFoundException;
 import grima.kuhaejwo.except.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +31,9 @@ public class MateOfferService {
 
     private final MateOfferRepository mateOfferRepository;
     private final UsersRepository userRepository;
+
+    private final ApplicationEventPublisher eventPublisher;
+
 
 
     @Transactional
@@ -73,6 +79,20 @@ public class MateOfferService {
         return mateOfferRepository.findAll().stream()
                 .map(o->new MateOfferResponse(o))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<MatchingResponse> matching() {
+        Users user = getUser();
+        List<Long> userIdList = mateOfferRepository.findAll().stream()
+                .filter(m -> !m.getMatching())
+                .map(m -> m.getUserProfile().getUserId())
+                .collect(Collectors.toList());
+        List<Users> userList = userRepository.findAllById(userIdList);
+        List<MatchingResponse> matchingResponses = userList.stream()
+                .map(o -> new MatchingResponse(user, o))
+                .collect(Collectors.toList());
+        return matchingResponses;
     }
 
 
